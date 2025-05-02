@@ -25,7 +25,12 @@ class CustomBroadcastReceiver(
 
     private val intentFilter: IntentFilter by lazy {
         val intentFilter = IntentFilter()
-        names.forEach { intentFilter.addAction(it) }
+        names.forEach {
+            intentFilter.addAction(it)
+            // Necessary to receive media intents such as ACTION_MEDIA_MOUNTED
+            // TODO-high-production Allow to set from Dart
+            intentFilter.addDataScheme("file")
+        }
         intentFilter
     }
 
