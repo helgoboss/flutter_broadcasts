@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.storage.StorageVolume
 import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -42,10 +43,22 @@ class CustomBroadcastReceiver(
                 Pair(key, bundle.get(key))
             }
             val data = dataPairs?.toMap() ?: mapOf()
+            val mutableData = data.toMutableMap()
+            val volume: StorageVolume? =
+                intent.getParcelableExtra("android.os.storage.extra.STORAGE_VOLUME")
+            if (volume != null) {
+                mutableData.put("storageDescription", volume.getDescription(context))
+                val openDocTreeIntent = volume.createOpenDocumentTreeIntent()
+                val storageUri: android.net.Uri? = openDocTreeIntent.getParcelableExtra("android.provider.extra.INITIAL_URI")
+                if (storageUri != null) {
+                    mutableData.put("storageUri", storageUri.toString())
+                }
+            }
+
             listener(mapOf(
                     "receiverId" to id,
                     "name" to it.action!!,
-                    "data" to normalize(data)
+                    "data" to normalize(mutableData)
             ))
         }
     }
