@@ -21,5 +21,3 @@ flutter:
       android:
         package: de.kevlatus.flutter_broadcasts
         pluginClass: FlutterBroadcastsPlugin
-      ios:
-        pluginClass: FlutterBroadcastsPlugin
